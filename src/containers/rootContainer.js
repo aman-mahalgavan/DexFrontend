@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import HomeContainer from './homeContainer';
 import { Paper, Card, CardContent, List, ListItem, ListItemText, Typography, Button, Grid } from '@material-ui/core';
-import { getOwners, getAccounts } from '../actions/actions';
+import { getOwners, getAccounts, addOwner } from '../actions/actions';
 import SimpleDialogWrapped from '../components/dialog';
 import AddOwner from '../components/addOwner';
 import AddProduct from '../components/addProduct';
+import Etherium from '../components/etherium';
 
 let sampleData = ['Owner 1', 'Owner 2', 'Owner 3', 'Owner 4', 'Owner 5'];
 const emails = ['username@gmail.com', 'user02@gmail.com'];
@@ -17,27 +18,36 @@ class RootContainer extends Component {
             data: [],
             addOwnerPopup: false,
             addProductPopup: false,
+            depositETHPopup: false,
+            withdrawETHPopup: false,
+            depositERC20Popup: false,
+            withdrawERC20Popup: false,
         };
     }
 
-    handleAddOwnerPopup = () => {
-        this.state.addOwnerPopup === true ? 
-        this.setState({
-            addOwnerPopup: false,
-        }) :
-        this.setState({
-            addOwnerPopup: true,
-        }) 
-    };
-
-    handleAddProductPopup = () => {
-        this.state.addProductPopup === true ? 
-        this.setState({
-            addProductPopup: false,
-        }) :
-        this.setState({
-            addProductPopup: true,
-        }) 
+    handlePopup = (type) => {
+        switch (type) {
+            case 'addOwner':
+                this.state.addOwnerPopup === true ? this.setState({ addOwnerPopup: false }) : this.setState({ addOwnerPopup: true });
+                break;
+            case 'addProduct':
+                this.state.addProductPopup === true ? this.setState({ addProductPopup: false }) : this.setState({ addProductPopup: true });
+                break;
+            case 'addETH':
+                this.state.depositETHPopup === true ? this.setState({ depositETHPopup: false }) : this.setState({ depositETHPopup: true });
+                break;
+            case 'withdrawETH':
+                this.state.withdrawETHPopup === true ? this.setState({ withdrawETHPopup: false }) : this.setState({ withdrawETHPopup: true });
+                break;
+            case 'addERC20':
+                this.state.depositERC20Popup === true ? this.setState({ depositERC20Popup: false }) : this.setState({ depositERC20Popup: true });
+                break;
+            case 'withdrawERC20':
+                this.state.withdrawERC20Popup === true ? this.setState({ withdrawERC20Popup: false }) : this.setState({ withdrawERC20Popup: true });
+                break;
+            default:
+                break;
+        }
     };
 
     handleGetOwners = () => {
@@ -64,16 +74,16 @@ class RootContainer extends Component {
                         Click to fetch all the Owners
                     </Button> */}
                 </Grid>
-                <Grid item xs={6} style={{maxWidth: '48%'}}>
+                <Grid item xs={6} style={{ maxWidth: '48%' }}>
                     <Typography>All Owners</Typography>
                     <pre>
                         {this.props.allOwners ? JSON.stringify(this.props.allOwners) : null}
                     </pre>
                 </Grid>
-                <Grid item xs={6} style={{maxWidth: '48%'}}>
+                <Grid item xs={6} style={{ maxWidth: '48%' }}>
                     <Typography>All Accounts</Typography>
                     <pre>
-                        {this.props.allAccounts ? JSON.stringify(this.props.allAccounts): null}
+                        {this.props.allAccounts ? JSON.stringify(this.props.allAccounts) : null}
                     </pre>
                 </Grid>
                 <Grid item xs={6}>
@@ -84,14 +94,15 @@ class RootContainer extends Component {
                 </Grid>
                 <Grid item xs={6}>
                     <Card style={styles.card}>
-                        <h3>More Functionalities</h3>
-                        <Button style={{ display: "block" }} onClick={this.handleAddOwnerPopup}> Add Owner </Button>
-                        <Button style={{ display: "block" }} onClick={this.handleAddProductPopup}> Add Product </Button>
-                        <Button style={{ display: "block" }} onClick={this.handleGetOwners}> Get Owners </Button>
-                        <Button style={{ display: "block" }} onClick={this.handleGetAccounts}> Get Account </Button>
-                        <Button style={{ display: "block" }}> Add ETH </Button>
-                        <Button style={{ display: "block" }}> ADD ERC20 </Button>
-                        <Button style={{ display: "block" }}> Withdraw ETH  </Button>
+                        <h3>More FunaddOwnerctionalities</h3>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('addOwner')}> Add Owner </Button>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('addProduct')}> Add Product </Button>
+                        <Button style={styles.defaultButton} onClick={this.handleGetOwners}> Get Owners </Button>
+                        <Button style={styles.defaultButton} onClick={this.handleGetAccounts}> Get Account </Button>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('addETH')}> Add ETH </Button>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('withdrawETH')}> Withdraw ETH  </Button>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('addERC20')}> Add ERC20 </Button>
+                        <Button style={styles.defaultButton} onClick={() => this.handlePopup('withdrawERC20')}> Withdraw ERC20 </Button>
 
                         {/* <Typography>Selected: {this.state.selectedValue}</Typography> */}
                         {/* <br /> */}
@@ -102,26 +113,77 @@ class RootContainer extends Component {
                 <SimpleDialogWrapped
                     // selectedValue={this.state.selectedValue}
                     open={this.state.addOwnerPopup}
-                    onClose={this.handleAddOwnerPopup}
+                    onClose={() => this.handlePopup('addOwner')}
                     component={
-                        <AddOwner style={{padding: '5%', minWidth:'400px', minHeight: '300px'}}
-                                  heading={"Add Owner"} 
-                                  placeholder={"Name of the new Owner"} 
-                                  action={(val) => {alert("New Owner Added -> " + JSON.stringify(val))}}
-                                  textFieldLabel={"Name"}        
+                        <AddOwner style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                            heading={"Add Owner"}
+                            placeholder={"Name of the new Owner"}
+                            action={(owner, amount) => {
+                                alert(`New Owner Added -> ${JSON.stringify(owner)} ${JSON.stringify(amount)}`);
+                                // return this.props.addOwner(owner, amount);
+                            }}
+                            textFieldLabel={"Name"}
                         />
                     }
                 />
                 <SimpleDialogWrapped
                     // selectedValue={this.state.selectedValue}
                     open={this.state.addProductPopup}
-                    onClose={this.handleAddProductPopup}
+                    onClose={() => this.handlePopup('addProduct')}
                     component={
-                        <AddProduct style={{padding: '5%', minWidth:'400px', minHeight: '300px'}}
-                                  heading={"Add PRODUCT"} 
-                                  placeholder={"Name of the new PRODUCT"} 
-                                  action={(val) => {alert("New PRODUCT Added -> " + JSON.stringify(val))}}
-                                  textFieldLabel={"Name"}        
+                        <AddProduct style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                            heading={"Add PRODUCT"}
+                            placeholder={"Name of the new PRODUCT"}
+                            action={(val) => { alert("New PRODUCT Added -> " + JSON.stringify(val)) }}
+                            textFieldLabel={"Name"}
+                        />
+                    }
+                />
+                <SimpleDialogWrapped
+                    // selectedValue={this.state.selectedValue}
+                    open={this.state.depositETHPopup}
+                    onClose={() => this.handlePopup('addETH')}
+                    component={
+                        <Etherium style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                            heading={"DEPOSIT ETH"}
+                            action={(val) => { alert("Deposit ETH -> " + JSON.stringify(val)) }}
+                            submitButtonText={"Deposit ETH"}
+                        />
+                    }
+                />
+                <SimpleDialogWrapped
+                    // selectedValue={this.state.selectedValue}
+                    open={this.state.withdrawETHPopup}
+                    onClose={() => this.handlePopup('withdrawETH')}
+                    component={
+                        <Etherium style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                            heading={"WITHDRAW ETH"}
+                            action={(val) => { alert("Withdraw ETH -> " + JSON.stringify(val)) }}
+                            submitButtonText={"Withdraw ETH"}
+                        />
+                    }
+                />
+                <SimpleDialogWrapped
+                    // selectedValue={this.state.selectedValue}
+                    open={this.state.depositERC20Popup}
+                    onClose={() => this.handlePopup('addERC20')}
+                    component={
+                        <Etherium style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                        heading={"ADD ERC20"}
+                        action={(val) => { alert("Deposit ERC20 -> " + JSON.stringify(val)) }}
+                        submitButtonText={"Deposit ERC20"}
+                        />
+                    }
+                />
+                <SimpleDialogWrapped
+                    // selectedValue={this.state.selectedValue}
+                    open={this.state.withdrawERC20Popup}
+                    onClose={() => this.handlePopup('withdrawERC20')}
+                    component={
+                        <Etherium style={{ padding: '5%', minWidth: '400px', minHeight: '300px' }}
+                            heading={"WITHDRAW ERC20"}
+                            action={(val) => { alert("Withdraw ERC20 -> " + JSON.stringify(val)) }}
+                            submitButtonText={"Withdraw ERC20"}
                         />
                     }
                 />
@@ -153,6 +215,9 @@ const styles = {
     //   margin: '0 2px',
     //   transform: 'scale(0.8)',
     // },
+    defaultButton: {
+        display: "block", backgroundColor: 'navy', color: 'white', minWidth: '150px', margin: '10px'
+    },
     title: {
         fontSize: 25,
     },
@@ -169,7 +234,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         getOwners: () => dispatch(getOwners()),
-        getAccounts: () => dispatch(getAccounts())
+        getAccounts: () => dispatch(getAccounts()),
+        addOwner: (owner, amount) => dispatch(addOwner(owner, amount))
     }
 }
 

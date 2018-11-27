@@ -1,38 +1,35 @@
 import { put, takeLatest, all } from 'redux-saga/effects';
+import axios from 'axios';
 function* getOwners() {
     console.log("Calling API...")
-//   const json = yield fetch('https://newsapi.org/v1/articles?source= cnn&apiKey=c39a26d9c12f48dba2a5c00e35684ecc')
-  const json = yield fetch('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/GetOwnerList')
+    const json = yield axios.get('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/GetOwnerList')
         .then(response => {
             console.log("Received the data. Forwarding JSON");
-            return response.json();
+            return response.data;
         });    
   yield put({ type: "RECEIVED_DATA", allOwners: json, });
 }
 function* getAccounts() {
     console.log("Calling API...")
-//   const json = yield fetch('https://newsapi.org/v1/articles?source= cnn&apiKey=c39a26d9c12f48dba2a5c00e35684ecc')
-  const json = yield fetch('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/GetAccountList')
+    const json = yield axios.get('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/GetAccountList')
         .then(response => {
             console.log("Received all Accounts. Forwarding JSON");
-            return response.json();
+            return response.data;
         });    
   yield put({ type: "RECEIVED_ACCOUNTS", allAccounts: json, });
 }
-function* addOwner() {
+function* addOwner(owner, amount) {
     console.log("Calling API...")
-//   const json = yield fetch('https://newsapi.org/v1/articles?source= cnn&apiKey=c39a26d9c12f48dba2a5c00e35684ecc')
-  const json = yield fetch('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/AddOwner')
+    const json = yield axios.post('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/AddOwner', {owner, amount})
         .then(response => {
             console.log("Added New Owner. Forwarding JSON");
-            return response.json();
+            return response.data;
         });    
   yield put({ type: "ADDED_NEW_OWNER", data: json, });
 }
 function* addProduct() {
     console.log("Calling API...")
-//   const json = yield fetch('https://newsapi.org/v1/articles?source= cnn&apiKey=c39a26d9c12f48dba2a5c00e35684ecc')
-  const json = yield fetch('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/AddProduct')
+    const json = yield fetch('http://ec2-54-180-123-66.ap-northeast-2.compute.amazonaws.com:3000/AddProduct')
         .then(response => {
             console.log("Added New Product. Forwarding JSON");
             return response.json();

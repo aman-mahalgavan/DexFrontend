@@ -13,7 +13,7 @@ const styles = {
     }
 }
 
-class AddOwner extends Component {
+class Etherium extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -56,14 +56,6 @@ class AddOwner extends Component {
                 <Typography style={styles.heading}>
                     {this.props.heading}
                 </Typography>
-                {/* <TextField
-                    id="standard-with-placeholder"
-                    label={this.props.textFieldLabel}
-                    placeholder={this.props.placeholder}
-                    // className={styles.textField}
-                    onChange={this.handleChange}
-                    margin="normal"
-                /> */}
                 <TextField
                     id="standard-number"
                     label="Amount"
@@ -97,17 +89,18 @@ class AddOwner extends Component {
                         </MenuItem>
                     ))}
                 </TextField>
-                <Button onClick={this.submit}>Add Owner</Button>
+                <Button onClick={this.submit}>{this.props.submitButtonText}</Button>
             </div>
         )
     }
 }
 
-AddOwner.propTypes = {
+Etherium.propTypes = {
     action: PropTypes.func,
     placeholder: PropTypes.string,
     heading: PropTypes.string,
-    textFieldLabel: PropTypes.string
+    textFieldLabel: PropTypes.string,
+    submitButtonText: PropTypes.string.isRequired
 }
 
 
@@ -119,4 +112,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(AddOwner);
+export default connect(null, mapDispatchToProps)(Etherium);
