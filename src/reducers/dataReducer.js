@@ -10,21 +10,32 @@ export default function (state = initState, action) {
         case FETCH_DATA:
             console.log('Fetching Data');
             return {
-                ...state,
+                ...state
                 // data: action.payload
             }
         case RECEIVED_DATA:
-            console.log('Received Data -> ', action.data.ownerList);
+            console.log('Received Data -> ', action.allOwners);
             return {
                 ...state,
-                data: action.data.ownerList
+                ownersList: action.allOwners.ownerList
+            }
+        case "RECEIVED_ACCOUNTS":
+            console.log('Received All Accounts -> ', action.allAccounts);
+            return {
+                ...state,
+                accountsList: action.allAccounts.accountList
             }
 
         case "ADD_OWNER":
             console.log('Adding New Owner -> ');
             return {
-                ...state,
+                ...state
                 // data: action.data
+            }
+        case "FETCH_ACCOUNTS":
+            console.log("Fetching all Accounts");
+            return {
+                ...state
             }
         case "ADDED_NEW_OWNER":
             console.log('Received Data -> ', action.data);
@@ -35,7 +46,7 @@ export default function (state = initState, action) {
         case "ADD_PRODUCT":
             console.log('Adding New PRODUCT -> ');
             return {
-                ...state,
+                ...state
                 // data: action.data
             }
         case "ADDED_NEW_PRODUCT":

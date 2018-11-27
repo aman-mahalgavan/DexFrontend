@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import HomeContainer from './homeContainer';
 import { Paper, Card, CardContent, List, ListItem, ListItemText, Typography, Button, Grid } from '@material-ui/core';
-import { fetchData } from '../actions/actions';
+import { getOwners, getAccounts } from '../actions/actions';
 import SimpleDialogWrapped from '../components/dialog';
 import AddOwner from '../components/addOwner';
 import AddProduct from '../components/addProduct';
@@ -40,6 +40,13 @@ class RootContainer extends Component {
         }) 
     };
 
+    handleGetOwners = () => {
+        this.props.getOwners();
+    };
+    handleGetAccounts = () => {
+        this.props.getAccounts();
+    };
+
     render() {
         let list = sampleData.map(obj => {
             return (
@@ -53,11 +60,20 @@ class RootContainer extends Component {
             <Grid container spacing={24}>
                 <Grid item xs={12} >
                     <h3>Welcome to the Dex Application</h3>
-                    <Button onClick={this.props.fetchData}>
+                    {/* <Button onClick={this.props.getOwners}>
                         Click to fetch all the Owners
-                    </Button>
+                    </Button> */}
+                </Grid>
+                <Grid item xs={6} style={{maxWidth: '48%'}}>
+                    <Typography>All Owners</Typography>
                     <pre>
-                        {JSON.stringify(this.props.data)}
+                        {this.props.allOwners ? JSON.stringify(this.props.allOwners) : null}
+                    </pre>
+                </Grid>
+                <Grid item xs={6} style={{maxWidth: '48%'}}>
+                    <Typography>All Accounts</Typography>
+                    <pre>
+                        {this.props.allAccounts ? JSON.stringify(this.props.allAccounts): null}
                     </pre>
                 </Grid>
                 <Grid item xs={6}>
@@ -71,10 +87,10 @@ class RootContainer extends Component {
                         <h3>More Functionalities</h3>
                         <Button style={{ display: "block" }} onClick={this.handleAddOwnerPopup}> Add Owner </Button>
                         <Button style={{ display: "block" }} onClick={this.handleAddProductPopup}> Add Product </Button>
-                        <Button style={{ display: "block" }}> Get Owners </Button>
-                        <Button style={{ display: "block" }}> Get Account </Button>
+                        <Button style={{ display: "block" }} onClick={this.handleGetOwners}> Get Owners </Button>
+                        <Button style={{ display: "block" }} onClick={this.handleGetAccounts}> Get Account </Button>
                         <Button style={{ display: "block" }}> Add ETH </Button>
-                        <Button style={{ display: "block" }}> ADD REC20 </Button>
+                        <Button style={{ display: "block" }}> ADD ERC20 </Button>
                         <Button style={{ display: "block" }}> Withdraw ETH  </Button>
 
                         {/* <Typography>Selected: {this.state.selectedValue}</Typography> */}
@@ -146,12 +162,14 @@ const styles = {
 };
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    allOwners: state.ownersList,
+    allAccounts: state.accountsList
 })
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: () => dispatch(fetchData())
+        getOwners: () => dispatch(getOwners()),
+        getAccounts: () => dispatch(getAccounts())
     }
 }
 
