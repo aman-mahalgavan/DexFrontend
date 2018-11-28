@@ -94,7 +94,7 @@ class RootContainer extends Component {
                 </Grid>
                 <Grid item xs={6}>
                     <Card style={styles.card}>
-                        <h3>More FunaddOwnerctionalities</h3>
+                        <h3>More Functionalities</h3>
                         <Button style={styles.defaultButton} onClick={() => this.handlePopup('addOwner')}> Add Owner </Button>
                         <Button style={styles.defaultButton} onClick={() => this.handlePopup('addProduct')}> Add Product </Button>
                         <Button style={styles.defaultButton} onClick={this.handleGetOwners}> Get Owners </Button>
